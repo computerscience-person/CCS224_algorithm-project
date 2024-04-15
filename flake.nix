@@ -32,7 +32,12 @@
 
         craneLib = crane.lib.${system};
         src = craneLib.cleanCargoSource (craneLib.path ./.);
-
+        toolchain = with fenix.packages.${system}; combine [
+            complete.cargo
+            complete.llvm-tools
+            complete.rustc
+            targets.x86_64-pc-windows-gnu.complete.rust-std
+        ];
         # Common arguments can be set here to avoid repeating them later
         commonArgs = {
           inherit src;
@@ -50,11 +55,7 @@
         };
 
         craneLibLLvmTools = craneLib.overrideToolchain
-          (fenix.packages.${system}.complete.withComponents [
-            "cargo"
-            "llvm-tools"
-            "rustc"
-          ]);
+          (toolchain);
 
         # Build *just* the cargo dependencies, so we can reuse
         # all of that work (e.g. via cachix) when running in CI
