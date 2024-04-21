@@ -1,5 +1,4 @@
 use clap::Parser;
-use std::env::current_dir;
 use std::error::Error;
 use std::path::PathBuf;
 
