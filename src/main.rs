@@ -31,34 +31,10 @@ impl Cli {
         let entries = self.read_dir_unwrapped()?;
         Ok(entries.iter().map(|entry| entry.file_name()).collect())
     }
-
-    // fn list_entries(&self) -> Result<Vec<Cow<'_, str>>, Box<dyn Error>> {
-    //     Ok(self
-    //         .read_dir()
-    //         .map_err(Box::new)?
-    //         .into_iter()
-    //         .filter_map(Result::ok)
-    //         .map(|entry| {
-    //          let name = entry.file_name().to_owned();
-    //          <OsStr as AsRef<OsStr>>::as_ref(&name).to_string_lossy()
-    //         })
-    //         .collect())
-    // }
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
     let cli = Cli::parse();
-    if let Ok(search_dirs) = cli.read_dir() {
-        for item in search_dirs {
-            eprintln!(
-                "{:}",
-                item.unwrap()
-                    .file_name()
-                    .to_str()
-                    .unwrap_or("ERROR: OsStr conversion error.")
-            );
-        }
-    }
     println!("{}", strsim::normalized_damerau_levenshtein(" ", ""));
     let mut mock_files = vec!["hello", "there", "how", "are", "you?"];
     fuzzy_search(&mut mock_files, &cli.searcher);
