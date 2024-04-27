@@ -24,8 +24,7 @@
 
         toolchain = with fenix.packages.${system};
           combine [
-            complete.rustc
-            complete.cargo
+            complete.rustc complete.cargo complete.clippy complete.rustfmt
             targets.x86_64-pc-windows-gnu.latest.rust-std
           ];
 
@@ -46,8 +45,7 @@
             pkgsCross.mingwW64.windows.pthreads
           ];
 
-          # resultLink = ./result-win;
-
+          outname = "fuzzy_file_searcher-windows";
         };
 
         app-linux = craneLib.buildPackage {
@@ -59,6 +57,12 @@
         packages = {
           windows = app-windows;
           default = app-linux;
+          builder-windows = pkgs.writeShellApplication {
+            name = "build-windows";
+            text = ''
+              nix build .#windows --out-link result-windows
+            '';
+          };
         };
 
         checks = {
